@@ -164,6 +164,18 @@ const BusinessSection = ({
 
         <div className="ie-divider" />
         <h3 className="ie-section-subtitle" style={{ fontSize: 13, fontWeight: 700, color: '#475569', marginBottom: 10 }}>Bank Details</h3>
+        <div style={{ marginBottom: 10 }}>
+          <Field label="Account Holder Name">
+            <input
+              className="ie-input"
+              value={data.business.bankDetails?.accountName || ''}
+              placeholder="John Doe"
+              readOnly={!isEditingBusiness}
+              style={{ background: isEditingBusiness ? 'white' : '#f8fafc', color: isEditingBusiness ? '#0f172a' : '#64748b' }}
+              onChange={e => handleNestedChange('business', 'bankDetails', 'accountName', e.target.value)}
+            />
+          </Field>
+        </div>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
           <Field label="Bank Name">
             <input

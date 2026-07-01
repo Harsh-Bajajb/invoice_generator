@@ -228,9 +228,15 @@ const Invoice = ({ data }) => {
 
                 <div className="invoice-footer-bottom">
                     <div className="bank-details-section">
-                        <h4 className="footer-section-title">CYNOX SECURITY LLP</h4>
+                        <h4 className="footer-section-title">{business.name ? business.name.toUpperCase() : 'CYNOX SECURITY LLP'}</h4>
                         {business.bankDetails ? (
                             <div className="bank-details-grid">
+                                {business.bankDetails.accountName && (
+                                    <div className="bank-row">
+                                        <span className="bank-label">Account Name:</span>
+                                        <span className="bank-value">{business.bankDetails.accountName}</span>
+                                    </div>
+                                )}
                                 <div className="bank-row">
                                     <span className="bank-label">Bank Name:</span>
                                     <span className="bank-value">{business.bankDetails.bankName || 'N/A'}</span>
