@@ -1,7 +1,6 @@
-require('dotenv').config();
+require('dotenv').config({ path: require('path').join(__dirname, '.env') });
 const express = require('express');
 const cors = require('cors');
-const path = require('path');
 const authRoutes = require('./routes/auth');
 const customerRoutes = require('./routes/customers');
 const serviceRoutes = require('./routes/services');
@@ -13,21 +12,7 @@ const PORT = process.env.PORT || 4000;
 
 // --- Middleware ---
 app.use(cors({
-  origin: [
-    'http://localhost',
-    'http://localhost:80',
-    'http://localhost:5173',
-    'http://127.0.0.1:5173',
-    'http://localhost:5174',
-    'http://127.0.0.1:5174',
-    'http://93.127.198.5:7000',
-    'http://93.127.198.5:8000',
-    'http://93.127.198.5',
-    'https://invoice.tmsync.in',
-    'http://invoice.tmsync.in',
-    'https://tmsync.in',
-    'http://tmsync.in'
-  ],
+  origin: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
@@ -56,18 +41,9 @@ app.get('/api/health', (req, res) => {
 });
 
 
-// --- Serve Frontend ---
-const frontendPath = path.join(__dirname, '../invoice/dist');
-app.use(express.static(frontendPath));
-
-// --- 404 Handler for API ---
-app.all('/api/*', (req, res) => {
+// --- 404 Handler ---
+app.use((req, res) => {
   res.status(404).json({ message: `Route ${req.method} ${req.url} not found.` });
-});
-
-// --- Catch-all for Frontend Routing ---
-app.get('*', (req, res) => {
-  res.sendFile(path.join(frontendPath, 'index.html'));
 });
 
 // --- Global Error Handler ---

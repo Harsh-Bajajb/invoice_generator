@@ -76,7 +76,7 @@ const BusinessSection = ({
             onChange={e => handleChange('business', 'name', e.target.value)}
           />
         </Field>
-        <Field label="Tax Number / GSTIN">
+        <Field label="MSME">
           <input
             className="ie-input"
             value={data.business.number}

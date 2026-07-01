@@ -8,6 +8,7 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(() => localStorage.getItem('auth_token'));
   const [isLoading, setIsLoading] = useState(true);
+  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
 
   // On mount, validate existing token with /me endpoint
   useEffect(() => {
@@ -171,6 +172,7 @@ export function AuthProvider({ children }) {
       if (res.ok) {
         setUser(data.user);
         setTempPassword(null);
+        setIsPasswordModalOpen(false); // Close modal on success
         return { success: true };
       } else {
         return { success: false, message: data.message || 'Failed to set password.' };
@@ -182,7 +184,11 @@ export function AuthProvider({ children }) {
   }, [token]);
 
   return (
-    <AuthContext.Provider value={{ user, token, isLoading, tempPassword, login, signup, googleLogin, setupPassword, logout }}>
+    <AuthContext.Provider value={{ 
+      user, token, isLoading, tempPassword, 
+      isPasswordModalOpen, setIsPasswordModalOpen,
+      login, signup, googleLogin, setupPassword, logout 
+    }}>
       {children}
     </AuthContext.Provider>
   );

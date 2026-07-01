@@ -11,8 +11,7 @@ const MetaSection = ({ data, handleChange }) => {
             className="ie-input"
             value={data.meta.invoiceNumber}
             placeholder="INV-001"
-            readOnly
-            style={{ background: '#f8fafc', color: '#64748b', cursor: 'default' }}
+            onChange={e => handleChange('meta', 'invoiceNumber', e.target.value)}
           />
         </Field>
         <Field label="Date">

@@ -71,7 +71,7 @@ const Invoice = ({ data }) => {
                 {/* Header Row: Logo Top Left, "TAX INVOICE" & Invoice # Top Right */}
                 <div className="invoice-header-row">
                     <div className="logo-container">
-                        <img src="/cynox_invoice_logo.svg" alt="Cynox Security" className="invoice-logo" />
+                        <img src="/zephy.png" alt="Invoice Logo" className="invoice-logo" />
                     </div>
                     <div className="header-meta-right">
                         <div className="tax-invoice-label">TAX INVOICE</div>
@@ -93,7 +93,7 @@ const Invoice = ({ data }) => {
 
                         {business.address1 && <p>{business.address1}</p>}
                         {business.address2 && <p>{business.address2}</p>}
-                        {business.number && <p><strong>GSTIN:</strong> {business.number}</p>}
+                        {business.number && <p><strong>MSME:</strong> {business.number}</p>}
                         {business.phone && <p>{business.phone}</p>}
                         {business.email && <p>{business.email}</p>}
                         {business.website && <p>{business.website}</p>}
@@ -111,16 +111,9 @@ const Invoice = ({ data }) => {
                             <p className="client-detail-text">
                                 {[client.street, client.district, client.city, client.state, client.pincode, client.country].filter(Boolean).join(', ') || 'Address not provided'}
                             </p>
-                            {client.gstNumber && <p className="client-detail-text"><strong>GST:</strong> {client.gstNumber}</p>}
+
                         </div>
 
-                        <div className="address-block">
-                            <p className="block-label">Ship To</p>
-                            <h3 className="client-name-bold">{client.name || 'Client Name'}</h3>
-                            <p className="client-detail-text">
-                                {[client.street, client.district, client.city, client.state, client.pincode, client.country].filter(Boolean).join(', ') || 'Address not provided'}
-                            </p>
-                        </div>
                     </div>
 
                     <div className="client-right-metadata">

@@ -48,8 +48,8 @@ const CustomersPage = () => {
 
   const handleSaveCustomer = async (e) => {
     e.preventDefault();
-    if (!newCustomer.name || !newCustomer.gstNumber) {
-      alert('Name and GST Number are mandatory.');
+    if (!newCustomer.name) {
+      alert('Name is mandatory.');
       return;
     }
     setIsSubmitting(true);
@@ -162,15 +162,7 @@ const CustomersPage = () => {
                 />
               </FormField>
 
-              <FormField label="GST Number" required icon={<ArrowUpRight size={15} color="#94a3b8" />}>
-                <input
-                  className="cp-input"
-                  placeholder="22AAAAA0000A1Z5"
-                  value={newCustomer.gstNumber}
-                  required
-                  onChange={(e) => setNewCustomer({ ...newCustomer, gstNumber: e.target.value })}
-                />
-              </FormField>
+
 
               <FormField label="Email Address" icon={<Mail size={15} color="#94a3b8" />}>
                 <input
@@ -355,12 +347,7 @@ const CustomersPage = () => {
                                 label="Registered Address"
                                 value={[customer.street, customer.city, customer.state, customer.pincode].filter(Boolean).join(', ') || '—'}
                               />
-                              <DetailCard
-                                icon={<ArrowUpRight size={13} color="#94a3b8" />}
-                                label="GST / Tax ID"
-                                value={customer.gstNumber || 'Unregistered'}
-                                mono
-                              />
+
                               <DetailCard
                                 icon={<Mail size={13} color="#94a3b8" />}
                                 label="Full Email"

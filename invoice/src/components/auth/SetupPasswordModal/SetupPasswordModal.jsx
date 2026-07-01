@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Eye, EyeOff, ArrowRight, AlertCircle, Lock } from 'lucide-react';
+import { Eye, EyeOff, ArrowRight, AlertCircle, Lock, X } from 'lucide-react';
 import { useAuth } from '../../../hooks/useAuth';
 import './SetupPasswordModal.css';
 
@@ -22,7 +22,7 @@ function getStrength(val) {
 }
 
 function SetupPasswordModal() {
-  const { user, tempPassword, setupPassword } = useAuth();
+  const { user, tempPassword, setupPassword, isPasswordModalOpen, setIsPasswordModalOpen } = useAuth();
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -34,7 +34,7 @@ function SetupPasswordModal() {
     return Array.from({ length: 12 }, () => charset.charAt(Math.floor(Math.random() * charset.length))).join('');
   }, []);
 
-  if (!user || !user.requiresPasswordSetup) return null;
+  if (!user || (!user.requiresPasswordSetup && !isPasswordModalOpen)) return null;
 
   const strength = getStrength(newPassword);
 
@@ -60,9 +60,25 @@ function SetupPasswordModal() {
               <Lock className="w-5 h-5 text-slate-800" />
             </div>
             <div>
-              <h2 className="setup-modal-title">Secure your account</h2>
-              <p className="setup-modal-subtitle">Create a password for workspace access</p>
+              <h2 className="setup-modal-title">
+                {user.requiresPasswordSetup ? 'Secure your account' : 'Reset your password'}
+              </h2>
+              <p className="setup-modal-subtitle">
+                {user.requiresPasswordSetup ? 'Create a password for workspace access' : 'Enter a new password for your account'}
+              </p>
             </div>
+            
+            {/* Close button - only show if NOT mandatory */}
+            {!user.requiresPasswordSetup && (
+              <button 
+                type="button" 
+                onClick={() => setIsPasswordModalOpen(false)}
+                className="setup-modal-close-btn"
+                aria-label="Close modal"
+              >
+                <X size={18} />
+              </button>
+            )}
           </div>
 
           {/* Temp password block */}

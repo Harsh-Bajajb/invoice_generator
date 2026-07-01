@@ -44,7 +44,6 @@ const ClientSection = ({
           <ClientRow icon={<LuMail size={13} />} label="Email" value={data.client.email || 'N/A'} />
           <ClientRow icon={<LuPhone size={13} />} label="Phone" value={`${data.client.phoneCountryCode} ${data.client.phoneNumber || 'N/A'}`} />
           <ClientRow icon={<LuMapPin size={13} />} label="Address" value={[data.client.street, data.client.city, data.client.state, data.client.pincode, data.client.country].filter(Boolean).join(', ') || 'N/A'} />
-          <ClientRow icon={<LuHash size={13} />} label="GSTIN" value={data.client.gstNumber || 'N/A'} mono />
           <div className="ie-client-footer">
             <div className="ie-active-pill">
               <span className="ie-active-dot" /> Active Client

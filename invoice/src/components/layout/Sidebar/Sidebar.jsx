@@ -2,15 +2,16 @@ import React, { useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import {
   FileText, Users, Package, LayoutDashboard,
-  Settings, LogOut, Menu, X
+  Settings, LogOut, Menu, X, Lock
 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import './Sidebar.css';
 import { cn } from '@/lib/utils';
 
 const Sidebar = ({ isOpen, onToggle }) => {
-  const { user, logout } = useAuth();
+  const { user, logout, setIsPasswordModalOpen } = useAuth();
   const [mobileOpen, setMobileOpen] = React.useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = React.useState(false);
 
   const navItems = [
     { name: 'Invoice Editor', path: '/', icon: FileText },
@@ -25,8 +26,20 @@ const Sidebar = ({ isOpen, onToggle }) => {
   useEffect(() => {
     const handleResize = () => { if (window.innerWidth >= 768) setMobileOpen(false); };
     window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+    
+    // Closer for settings popover
+    const handleClick = (e) => {
+      if (isSettingsOpen && !e.target.closest('.sb-settings-group')) {
+        setIsSettingsOpen(false);
+      }
+    };
+    window.addEventListener('mousedown', handleClick);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('mousedown', handleClick);
+    };
+  }, [isSettingsOpen]);
 
   const sidebarContent = (
     <div className={cn("sb-sidebar", !isOpen && "sb-collapsed")}>
@@ -109,13 +122,35 @@ const Sidebar = ({ isOpen, onToggle }) => {
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-          <button className="sb-footer-btn" style={{
-            justifyContent: !isOpen ? 'center' : 'flex-start',
-            padding: !isOpen ? '9px 0' : '9px 12px',
-          }}>
-            <Settings size={14} color="#64748b" strokeWidth={2} />
-            {isOpen && <span className="sb-footer-btn-text">Settings</span>}
-          </button>
+          <div className="sb-settings-group">
+            <button 
+              className={cn("sb-footer-btn", isSettingsOpen && "sb-footer-btn-active")} 
+              style={{
+                justifyContent: !isOpen ? 'center' : 'flex-start',
+                padding: !isOpen ? '9px 0' : '9px 12px',
+              }}
+              onClick={() => setIsSettingsOpen(!isSettingsOpen)}
+            >
+              <Settings size={14} color={isSettingsOpen ? "#3b82f6" : "#64748b"} strokeWidth={2} />
+              {isOpen && <span className="sb-footer-btn-text">Settings</span>}
+            </button>
+
+            {isSettingsOpen && (
+              <div className={cn("sb-submenu", !isOpen && "sb-submenu-collapsed")}>
+                <button 
+                  className="sb-submenu-item"
+                  onClick={() => {
+                    setIsPasswordModalOpen(true);
+                    setIsSettingsOpen(false);
+                    if (!isOpen) onToggle();
+                  }}
+                >
+                  <Lock size={12} strokeWidth={2.5} />
+                  <span>Reset Password</span>
+                </button>
+              </div>
+            )}
+          </div>
 
           <button
             className="sb-footer-btn"
