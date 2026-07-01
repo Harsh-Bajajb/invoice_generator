@@ -46,7 +46,7 @@ const InvoicePreview = ({ data, onReset, showToast }) => {
             input.style.transform = 'none';
 
             html2canvas(input, { 
-                scale: 3, // High scale for professional quality
+                scale: 2, // High scale for professional quality but lower to keep size small
                 useCORS: true,
                 logging: false,
                 backgroundColor: '#ffffff',
@@ -76,12 +76,12 @@ const InvoicePreview = ({ data, onReset, showToast }) => {
                     }
                 }
             }).then((canvas) => {
-                const imgData = canvas.toDataURL('image/png');
+                const imgData = canvas.toDataURL('image/jpeg', 0.75); // Use JPEG with quality 0.75 for massive size reduction
                 const pdf = new jsPDF('p', 'mm', 'a4');
                 const pdfWidth = pdf.internal.pageSize.getWidth();
                 const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
 
-                pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+                pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight, undefined, 'FAST');
                 
                 const invoiceNum = data?.meta?.invoiceNumber || 'Invoice';
                 const fileName = `${invoiceNum}.pdf`;
