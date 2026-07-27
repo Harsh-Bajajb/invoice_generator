@@ -468,7 +468,7 @@
   font-size: 13px;
   font-weight: 600;
   color: var(--text-secondary);
-  var(--paper)-space: nowrap;
+  white-space: nowrap;
 }
 
 .ip-creator-avatar {
