@@ -61,41 +61,27 @@ function LoginPage() {
         <div className="login-left-content">
           {/* Brand */}
           <div className="login-brand">
-            <div className="login-brand-icon">
-              <LayoutDashboard className="w-7 h-7 text-white" />
+            <div className="login-brand-icon" style={{ background: '#FFFFFF', border: '1px solid rgba(255,255,255,0.1)', padding: 6, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <img src="/zephy.png" alt="Zephy Logo" style={{ width: 28, height: 28, objectFit: 'contain' }} />
             </div>
             <div>
               <h1 className="login-brand-name">
-                Invo<span>Gen</span>
+                Zephy
               </h1>
-              <p className="login-brand-tagline">Workspace Pro</p>
             </div>
           </div>
 
-          {/* Headline */}
-          <div className="login-headline">
-            <h2 className="login-headline-title">
-              Create beautiful<br />
-              invoices in minutes.
-            </h2>
-            <p className="login-headline-sub">
-              Your professional invoicing workspace. Manage customers, products, and documents — all in one place.
-            </p>
-          </div>
-
-          {/* Feature Pills */}
-          <div className="login-features">
-            {['PDF Export', 'Client Management', 'Product Catalog', 'Live Preview'].map((f) => (
-              <span key={f} className="login-feature-pill">{f}</span>
-            ))}
-          </div>
-        </div>
-
-        {/* Bottom Quote */}
-        <div className="login-left-footer">
-          <div className="login-quote">
-            <p className="login-quote-text">"The slickest invoicing tool I've used. My clients are impressed every time."</p>
-            <p className="login-quote-author">— A happy user</p>
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', paddingRight: '10%' }}>
+            {/* Headline */}
+            <div className="login-headline" style={{ marginTop: 'auto', marginBottom: 'auto' }}>
+              <h2 className="login-headline-title" style={{ fontSize: '3.5rem', lineHeight: 1.1, marginBottom: '1.5rem', letterSpacing: '-0.02em', fontWeight: 700 }}>
+                Elevate your <br />
+                <span style={{ color: 'var(--gold)' }}>invoicing</span> experience.
+              </h2>
+              <p className="login-headline-sub" style={{ fontSize: '1.2rem', opacity: 0.85, lineHeight: 1.6, maxWidth: 480 }}>
+                Your professional workspace to manage clients, track payments, and send stunning invoices.
+              </p>
+            </div>
           </div>
         </div>
       </div>
