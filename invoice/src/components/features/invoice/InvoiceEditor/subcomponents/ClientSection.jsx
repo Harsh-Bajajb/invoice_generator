@@ -1,56 +1,86 @@
 import React from 'react';
-import { LuUser, LuMail, LuPhone, LuMapPin, LuHash } from 'react-icons/lu';
-import { Section, Field, StyledSelect, FetchLoading, FetchError } from './EditorLayout';
-
-const ClientRow = ({ icon, label, value, mono }) => (
-  <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10, padding: '8px 0', borderBottom: '1px solid #f1f5f9' }}>
-    <div style={{ width: 28, height: 28, borderRadius: 7, background: '#f1f5f9', border: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, color: '#64748b', marginTop: 1 }}>
-      {icon}
-    </div>
-    <div style={{ minWidth: 0 }}>
-      <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#94a3b8', margin: '0 0 2px' }}>{label}</p>
-      <p style={{ fontSize: 13, fontWeight: 600, color: '#334155', margin: 0, fontFamily: mono ? 'monospace' : 'inherit', wordBreak: 'break-word' }}>{value}</p>
-    </div>
-  </div>
-);
+import { LuUser } from 'react-icons/lu';
+import { Section, Field, CustomSelect, FetchLoading, FetchError } from './EditorLayout';
 
 const ClientSection = ({
   data,
+  open,
+  onToggle,
   customersLoading,
   customersError,
   customers,
-  handleCustomerSelect
+  handleCustomerSelect,
+  handleChange
 }) => {
   return (
-    <Section icon={<LuUser size={15} />} title="Client Information">
-      <Field label="Select Customer">
-        {customersLoading && <FetchLoading label="customers" />}
-        {customersError && <FetchError message="Cannot connect to backend. Start the server on port 4000." />}
-        {!customersLoading && !customersError && (
-          <StyledSelect
-            id="customer-select"
-            value={data.client?.id ?? ''}
-            onChange={handleCustomerSelect}
-            disabled={customersLoading || data.isExisting}
-            placeholder={customers.length === 0 ? '— No customers in database —' : '— Choose a customer —'}
-          >
-            {customers.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
-          </StyledSelect>
-        )}
-      </Field>
+    <Section icon={<LuUser size={16} />} title="Client information" sub="Who this invoice is billed to" open={open} onToggle={onToggle}>
+      <div className="field-row" style={{ marginBottom: 16 }}>
+        <Field label="Select Customer (from database)" fullWidth>
+          {customersLoading && <FetchLoading label="customers" />}
+          {customersError && <FetchError message="Cannot connect to backend." />}
+          {!customersLoading && !customersError && (
+            <CustomSelect
+              id="customer-select"
+              value={data.client?.id ?? ''}
+              onChange={handleCustomerSelect}
+              disabled={customersLoading || data.isExisting}
+              placeholder={customers.length === 0 ? '— No customers in database —' : '— Choose a customer —'}
+              options={customers.map(c => ({ value: c.id, label: c.name }))}
+            />
+          )}
+        </Field>
+      </div>
 
-      {data.client?.name && (
-        <div className="ie-client-card">
-          <ClientRow icon={<LuMail size={13} />} label="Email" value={data.client.email || 'N/A'} />
-          <ClientRow icon={<LuPhone size={13} />} label="Phone" value={`${data.client.phoneCountryCode} ${data.client.phoneNumber || 'N/A'}`} />
-          <ClientRow icon={<LuMapPin size={13} />} label="Address" value={[data.client.street, data.client.city, data.client.state, data.client.pincode, data.client.country].filter(Boolean).join(', ') || 'N/A'} />
-          <div className="ie-client-footer">
-            <div className="ie-active-pill">
-              <span className="ie-active-dot" /> Active Client
-            </div>
-          </div>
-        </div>
-      )}
+      <div className="field-row">
+        <Field label="Client name" fullWidth>
+          <input 
+            placeholder="Client or company name" 
+            value={data.client?.name || ''} 
+            onChange={e => handleChange('client', 'name', e.target.value)}
+            readOnly={data.isExisting}
+          />
+        </Field>
+        
+        <Field label="Billing address" fullWidth>
+          <textarea 
+            placeholder="Street, city, postcode" 
+            value={[data.client?.street, data.client?.city, data.client?.state, data.client?.pincode, data.client?.country].filter(Boolean).join(', ')}
+            onChange={e => {
+              // Just a basic generic update for the raw address string if they type manually
+              handleChange('client', 'street', e.target.value);
+            }}
+            readOnly={data.isExisting}
+            style={{ resize: 'vertical', minHeight: '60px' }}
+          />
+        </Field>
+        
+        <Field label="Email">
+          <input 
+            placeholder="billing@client.com" 
+            value={data.client?.email || ''} 
+            onChange={e => handleChange('client', 'email', e.target.value)}
+            readOnly={data.isExisting}
+          />
+        </Field>
+        
+        <Field label="GSTIN">
+          <input 
+            placeholder="Optional" 
+            value={data.client?.gstNumber || ''} 
+            onChange={e => handleChange('client', 'gstNumber', e.target.value)}
+            readOnly={data.isExisting}
+          />
+        </Field>
+
+        <Field label="Phone">
+          <input 
+            placeholder="Phone number" 
+            value={data.client?.phoneNumber ? `${data.client.phoneCountryCode || ''} ${data.client.phoneNumber}`.trim() : ''} 
+            onChange={e => handleChange('client', 'phoneNumber', e.target.value)}
+            readOnly={data.isExisting}
+          />
+        </Field>
+      </div>
     </Section>
   );
 };

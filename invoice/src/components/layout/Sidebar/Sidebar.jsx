@@ -6,7 +6,6 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import './Sidebar.css';
-import { cn } from '@/lib/utils';
 
 const Sidebar = ({ isOpen, onToggle }) => {
   const { user, logout, setIsPasswordModalOpen } = useAuth();
@@ -14,7 +13,7 @@ const Sidebar = ({ isOpen, onToggle }) => {
   const [isSettingsOpen, setIsSettingsOpen] = React.useState(false);
 
   const navItems = [
-    { name: 'Invoice Editor', path: '/', icon: FileText },
+    { name: 'Invoice editor', path: '/', icon: FileText },
     { name: 'Invoices',       path: '/invoices',  icon: LayoutDashboard },
     { name: 'Customers',      path: '/customers', icon: Users },
     { name: 'Products',       path: '/products',  icon: Package },
@@ -42,128 +41,85 @@ const Sidebar = ({ isOpen, onToggle }) => {
   }, [isSettingsOpen]);
 
   const sidebarContent = (
-    <div className={cn("sb-sidebar", !isOpen && "sb-collapsed")}>
-
+    <div className={`sidebar ${!isOpen ? 'collapsed' : ''}`}>
       {/* ── Brand / Toggle ── */}
-      <div className="sb-brand">
-        <button 
-          className="sb-brand-icon-toggle" 
-          onClick={onToggle}
-          title={isOpen ? "Collapse Sidebar" : "Expand Sidebar"}
-        >
-          <LayoutDashboard size={16} color="#fff" strokeWidth={2.5} />
-        </button>
+      <div className="brand" onClick={onToggle} title={isOpen ? "Collapse Sidebar" : "Expand Sidebar"}>
+        <div className="brand-mark" style={{ background: '#FFFFFF', border: '1px solid rgba(255,255,255,0.1)', padding: 6, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <img src="/zephy.png" alt="Zephy Logo" style={{ width: 24, height: 24, objectFit: 'contain' }} />
+        </div>
         {isOpen && (
-          <div className="sb-brand-text">
-            <span className="sb-brand-name">Invo<span style={{ color: '#3b82f6' }}>Gen</span></span>
-            <span className="sb-brand-sub">Workspace Pro</span>
+          <div>
+            <div className="brand-name">Zephy</div>
+            <div className="brand-tier">Invoice Generator</div>
           </div>
         )}
       </div>
 
       {/* ── Nav ── */}
-      <nav className="sb-nav">
-        {isOpen && <p className="sb-nav-label">General</p>}
-        {navItems.map(item => (
-          <NavLink
-            key={item.path}
-            to={item.path}
-            end={item.path === '/'}
-            className={({ isActive }) => cn("sb-nav-item", isActive && "sb-nav-item-active")}
-            style={{
-              justifyContent: !isOpen ? 'center' : 'flex-start',
-              padding: !isOpen ? '10px 0' : '9px 12px',
-            }}
-            onClick={() => setMobileOpen(false)}
-          >
-            {({ isActive }) => (
-              <>
-                <item.icon
-                  size={16}
-                  strokeWidth={isActive ? 2.5 : 2}
-                  color={isActive ? '#3b82f6' : '#64748b'}
-                  style={{ flexShrink: 0, transition: 'color 0.15s' }}
-                />
-                {isOpen && (
-                  <span className="sb-nav-link-text" style={{
-                    color: isActive ? '#0f172a' : '#475569',
-                    fontWeight: isActive ? 700 : 500,
-                  }}>
-                    {item.name}
-                  </span>
-                )}
-                {isOpen && isActive && (
-                  <div className="sb-active-dot" />
-                )}
-              </>
-            )}
-          </NavLink>
-        ))}
-      </nav>
+      {isOpen && <div className="nav-group-label">General</div>}
+      {navItems.map(item => (
+        <NavLink
+          key={item.path}
+          to={item.path}
+          end={item.path === '/'}
+          className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
+          style={{ justifyContent: !isOpen ? 'center' : 'flex-start' }}
+          onClick={() => setMobileOpen(false)}
+        >
+          <item.icon />
+          {isOpen && <span>{item.name}</span>}
+        </NavLink>
+      ))}
 
-      {/* ── Footer ── */}
-      <div className="sb-footer">
-        <div className="sb-divider" />
+      <div className="sidebar-spacer" />
 
-        <div className="sb-user-row" style={{
-          justifyContent: !isOpen ? 'center' : 'flex-start',
-          padding: !isOpen ? '10px 0' : '10px 12px',
-        }}>
-          <div className="sb-avatar-wrap">
-            <div className="sb-avatar">{initials}</div>
-            <div className="sb-online-dot" />
-          </div>
-          {isOpen && (
-            <div className="sb-user-info">
-              <p className="sb-user-name">{displayName}</p>
-              <p className="sb-user-email">{user?.email || ''}</p>
-            </div>
-          )}
-        </div>
+      {/* ── Settings ── */}
+      <div className="sb-settings-group" style={{ position: 'relative' }}>
+        <button 
+          className="sidebar-btn nav-item" 
+          style={{ justifyContent: !isOpen ? 'center' : 'flex-start' }}
+          onClick={() => setIsSettingsOpen(!isSettingsOpen)}
+        >
+          <Settings size={16} opacity={isSettingsOpen ? 1 : 0.85} />
+          {isOpen && <span>Settings</span>}
+        </button>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-          <div className="sb-settings-group">
+        {isSettingsOpen && (
+          <div style={{ position: 'absolute', bottom: '100%', left: 0, right: 0, background: '#2B2E33', padding: 8, borderRadius: 7, marginBottom: 4 }}>
             <button 
-              className={cn("sb-footer-btn", isSettingsOpen && "sb-footer-btn-active")} 
-              style={{
-                justifyContent: !isOpen ? 'center' : 'flex-start',
-                padding: !isOpen ? '9px 0' : '9px 12px',
+              className="sidebar-btn nav-item"
+              onClick={() => {
+                setIsPasswordModalOpen(true);
+                setIsSettingsOpen(false);
+                if (!isOpen) onToggle();
               }}
-              onClick={() => setIsSettingsOpen(!isSettingsOpen)}
             >
-              <Settings size={14} color={isSettingsOpen ? "#3b82f6" : "#64748b"} strokeWidth={2} />
-              {isOpen && <span className="sb-footer-btn-text">Settings</span>}
+              <Lock size={14} />
+              <span>Reset Password</span>
             </button>
-
-            {isSettingsOpen && (
-              <div className={cn("sb-submenu", !isOpen && "sb-submenu-collapsed")}>
-                <button 
-                  className="sb-submenu-item"
-                  onClick={() => {
-                    setIsPasswordModalOpen(true);
-                    setIsSettingsOpen(false);
-                    if (!isOpen) onToggle();
-                  }}
-                >
-                  <Lock size={12} strokeWidth={2.5} />
-                  <span>Reset Password</span>
-                </button>
-              </div>
-            )}
           </div>
+        )}
+      </div>
 
-          <button
-            className="sb-footer-btn"
-            style={{
-              justifyContent: !isOpen ? 'center' : 'flex-start',
-              padding: !isOpen ? '9px 0' : '9px 12px',
-            }}
-            onClick={logout}
-          >
-            <LogOut size={14} color="#94a3b8" strokeWidth={2} />
-            {isOpen && <span className="sb-footer-btn-text" style={{ color: '#94a3b8' }}>Sign Out</span>}
-          </button>
-        </div>
+      {/* ── Sign Out ── */}
+      <button
+        className="sidebar-btn nav-item"
+        style={{ justifyContent: !isOpen ? 'center' : 'flex-start', marginBottom: 16 }}
+        onClick={logout}
+      >
+        <LogOut size={16} opacity={0.85} />
+        {isOpen && <span>Sign Out</span>}
+      </button>
+
+      {/* ── User ── */}
+      <div className="sidebar-user" style={{ justifyContent: !isOpen ? 'center' : 'flex-start' }}>
+        <div className="user-avatar">{initials}</div>
+        {isOpen && (
+          <div>
+            <div className="user-name">{displayName}</div>
+            <div className="user-email">{user?.email || ''}</div>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -174,10 +130,10 @@ const Sidebar = ({ isOpen, onToggle }) => {
       <div data-sidebar-mobile-bar className="sb-mobile-bar">
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <button className="sb-menu-btn" onClick={() => setMobileOpen(true)}>
-            <Menu size={20} color="#334155" />
+            <Menu size={20} color="#1B1D20" />
           </button>
-          <span className="sb-brand-name" style={{ fontSize: '16px' }}>
-            Invo<span style={{ color: '#3b82f6' }}>Gen</span>
+          <span className="brand-name" style={{ fontSize: '16px', color: '#1B1D20' }}>
+            InvoGen
           </span>
         </div>
       </div>
@@ -192,68 +148,10 @@ const Sidebar = ({ isOpen, onToggle }) => {
         transform: mobileOpen ? 'translateX(0)' : 'translateX(-100%)',
       }}>
         <button className="sb-close-btn" onClick={() => setMobileOpen(false)}>
-          <X size={16} color="#64748b" />
+          <X size={16} />
         </button>
-        <div className="sb-sidebar" style={{ width: '100%', height: '100%', borderRight: 'none' }}>
-          <div className="sb-brand">
-            <div className="sb-brand-icon">
-              <LayoutDashboard size={16} color="#fff" strokeWidth={2.5} />
-            </div>
-            <div className="sb-brand-text">
-              <span className="sb-brand-name">Invo<span style={{ color: '#3b82f6' }}>Gen</span></span>
-              <span className="sb-brand-sub">Workspace Pro</span>
-            </div>
-          </div>
-
-          <nav className="sb-nav">
-            <p className="sb-nav-label">General</p>
-            {navItems.map(item => (
-              <NavLink
-                key={item.path}
-                to={item.path}
-                end={item.path === '/'}
-                className={({ isActive }) => cn("sb-nav-item", isActive && "sb-nav-item-active")}
-                style={{ padding: '9px 12px' }}
-                onClick={() => setMobileOpen(false)}
-              >
-                {({ isActive }) => (
-                  <>
-                    <item.icon
-                      size={16}
-                      strokeWidth={isActive ? 2.5 : 2}
-                      color={isActive ? '#3b82f6' : '#64748b'}
-                      style={{ flexShrink: 0 }}
-                    />
-                    <span className="sb-nav-link-text" style={{
-                      color: isActive ? '#0f172a' : '#475569',
-                      fontWeight: isActive ? 700 : 500,
-                    }}>
-                      {item.name}
-                    </span>
-                    {isActive && <div className="sb-active-dot" />}
-                  </>
-                )}
-              </NavLink>
-            ))}
-          </nav>
-
-          <div className="sb-footer">
-            <div className="sb-divider" />
-            <div className="sb-user-row" style={{ padding: '10px 12px' }}>
-              <div className="sb-avatar-wrap">
-                <div className="sb-avatar">{initials}</div>
-                <div className="sb-online-dot" />
-              </div>
-              <div className="sb-user-info">
-                <p className="sb-user-name">{displayName}</p>
-                <p className="sb-user-email">{user?.email || ''}</p>
-              </div>
-            </div>
-            <button className="sb-footer-btn" style={{ padding: '9px 12px' }} onClick={logout}>
-              <LogOut size={14} color="#94a3b8" />
-              <span className="sb-footer-btn-text" style={{ color: '#94a3b8' }}>Sign Out</span>
-            </button>
-          </div>
+        <div style={{ height: '100%' }}>
+          {React.cloneElement(sidebarContent, { isOpen: true })}
         </div>
       </div>
 

@@ -14,10 +14,10 @@ import { useToast } from '../../context/ToastContext';
 const CATEGORIES = ['Service', 'Physical Product', 'Digital Goods', 'Subscription'];
 
 const CATEGORY_STYLES = {
-  'Service': { bg: '#eff6ff', color: '#2563eb', border: '#bfdbfe' },
-  'Physical Product': { bg: '#f0fdf4', color: '#16a34a', border: '#bbf7d0' },
-  'Digital Goods': { bg: '#faf5ff', color: '#7c3aed', border: '#ddd6fe' },
-  'Subscription': { bg: '#fff7ed', color: '#ea580c', border: '#fed7aa' },
+  'Service': { bg: 'var(--accent-soft)', color: 'var(--accent-text)', border: 'var(--line)' },
+  'Physical Product': { bg: 'var(--surface)', color: 'var(--text-primary)', border: 'var(--line)' },
+  'Digital Goods': { bg: 'var(--surface)', color: 'var(--text-primary)', border: 'var(--line)' },
+  'Subscription': { bg: 'var(--accent-soft)', color: 'var(--accent-text)', border: 'var(--line)' },
 };
 
 const ProductsPage = () => {

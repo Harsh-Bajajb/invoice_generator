@@ -5,8 +5,7 @@ import InvoiceEditor from '../../components/features/invoice/InvoiceEditor/Invoi
 import InvoicePreview from '../../components/features/invoice/InvoicePreview/InvoicePreview';
 import { useInvoice } from '../../hooks/useInvoice';
 import { useToast } from '../../context/ToastContext';
-import '../../components/features/invoice/InvoiceEditor/InvoiceEditor.css';
-
+import './EditorPage.css';
 
 const EditorPage = () => {
   const [invoiceData, setInvoiceData] = useInvoice();
@@ -65,24 +64,47 @@ const EditorPage = () => {
   const { showToast } = useToast();
 
   return (
-    <div className="flex flex-col md:flex-row gap-8 items-start relative">
-      <div className="w-full md:w-1/2">
-        <InvoiceEditor data={invoiceData} onChange={setInvoiceData} showToast={showToast} />
-      </div>
-      <div className="w-full md:w-1/2 md:sticky md:top-8">
-        <InvoicePreview data={invoiceData} onReset={() => {
-            fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:4000/api'}/invoices/next-number`)
-              .then(res => res.json())
-              .then(resData => {
-                  setInvoiceData(prev => ({
-                      ...prev,
-                      client: { id: '', name: '', address1: '', address2: '', phone: '', email: '', gstNumber: '' },
-                      meta: { ...prev.meta, invoiceNumber: resData.nextNumber || '' },
-                      items: [{ id: Date.now(), serviceId: '', description: '', longDescription: '', rate: 0, quantity: 1, gstRate: 0 }]
-                  }));
-              })
-              .catch(err => console.error('Failed to refetch next invoice number:', err));
-        }} showToast={showToast} />
+    <div className="editor-layout-wrapper">
+      <div className="editor-main">
+        <div className="editor-topbar">
+          <div>
+            <div className="topbar-eyebrow">Invoice editor</div>
+            <h1>New invoice</h1>
+            <p>Fill in your business, client and line items — the preview updates as you go.</p>
+          </div>
+          <div className="topbar-actions">
+            <div className="status-pill"><span className="dot"></span> Draft</div>
+            <button className="editor-btn editor-btn-primary" onClick={() => {
+              const previewExportBtn = document.getElementById('preview-export-btn');
+              if (previewExportBtn) previewExportBtn.click();
+            }}>
+              Export PDF
+            </button>
+          </div>
+        </div>
+
+        <div className="content-grid">
+          <div className="col-left">
+            <InvoiceEditor data={invoiceData} onChange={setInvoiceData} showToast={showToast} />
+          </div>
+          <div className="col-right">
+            <div className="preview-shell">
+              <InvoicePreview data={invoiceData} onReset={() => {
+                  fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:4000/api'}/invoices/next-number`)
+                    .then(res => res.json())
+                    .then(resData => {
+                        setInvoiceData(prev => ({
+                            ...prev,
+                            client: { id: '', name: '', address1: '', address2: '', phone: '', email: '', gstNumber: '' },
+                            meta: { ...prev.meta, invoiceNumber: resData.nextNumber || '' },
+                            items: [{ id: Date.now(), serviceId: '', description: '', longDescription: '', rate: 0, quantity: 1, gstRate: 0 }]
+                        }));
+                    })
+                    .catch(err => console.error('Failed to refetch next invoice number:', err));
+              }} showToast={showToast} />
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

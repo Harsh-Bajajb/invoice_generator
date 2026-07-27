@@ -1,11 +1,9 @@
 import React from 'react';
-import { LuCalculator } from 'react-icons/lu';
 import { useApiData } from '@/hooks/useApiData';
+import { LuFileText } from 'react-icons/lu';
 import defaultLogo from '@/assets/cynox_logo.png';
-import './InvoiceEditor.css';
+import { Section, Field } from './subcomponents/EditorLayout';
 
-// Subcomponents
-import { Label } from './subcomponents/EditorLayout';
 import BusinessSection from './subcomponents/BusinessSection';
 import ClientSection from './subcomponents/ClientSection';
 import MetaSection from './subcomponents/MetaSection';
@@ -16,6 +14,9 @@ const InvoiceEditor = ({ data, onChange, showToast }) => {
 
   const [isSavingBusiness, setIsSavingBusiness] = React.useState(false);
   const [isEditingBusiness, setIsEditingBusiness] = React.useState(false);
+  
+  // Manage which accordion is open
+  const [openCard, setOpenCard] = React.useState('business');
 
   const { data: customersData, isLoading: customersLoading, error: customersError } = useApiData('/customers');
   const { data: servicesData, isLoading: servicesLoading, error: servicesError } = useApiData('/services');
@@ -171,70 +172,77 @@ const InvoiceEditor = ({ data, onChange, showToast }) => {
     }
   };
 
+  const toggle = (card) => setOpenCard(prev => prev === card ? null : card);
+
   return (
-    <div className="ie-editor">
-      <div className="ie-header">
-        <div className="ie-header-icon"><LuCalculator size={18} color="#fff" /></div>
-        <div>
-          <h2 className="ie-header-title">Invoice Editor</h2>
-          <p className="ie-header-sub">Manage business, client and line items</p>
-        </div>
-      </div>
+    <>
+      <BusinessSection 
+        data={data}
+        open={openCard === 'business'}
+        onToggle={() => toggle('business')}
+        isEditingBusiness={isEditingBusiness}
+        setIsEditingBusiness={setIsEditingBusiness}
+        isSavingBusiness={isSavingBusiness}
+        updateBusinessProfile={updateBusinessProfile}
+        handleLogoUpload={handleLogoUpload}
+        handleSignatureUpload={handleSignatureUpload}
+        handleChange={handleChange}
+        handleNestedChange={handleNestedChange}
+        defaultLogo={defaultLogo}
+      />
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-        <BusinessSection 
-          data={data}
-          isEditingBusiness={isEditingBusiness}
-          setIsEditingBusiness={setIsEditingBusiness}
-          isSavingBusiness={isSavingBusiness}
-          updateBusinessProfile={updateBusinessProfile}
-          handleLogoUpload={handleLogoUpload}
-          handleSignatureUpload={handleSignatureUpload}
-          handleChange={handleChange}
-          handleNestedChange={handleNestedChange}
-          defaultLogo={defaultLogo}
-        />
+      <ClientSection 
+        data={data}
+        open={openCard === 'client'}
+        onToggle={() => toggle('client')}
+        customersLoading={customersLoading}
+        customersError={customersError}
+        customers={customers}
+        handleCustomerSelect={handleCustomerSelect}
+        handleChange={handleChange}
+      />
 
-        <ClientSection 
-          data={data}
-          customersLoading={customersLoading}
-          customersError={customersError}
-          customers={customers}
-          handleCustomerSelect={handleCustomerSelect}
-        />
+      <MetaSection 
+        data={data} 
+        open={openCard === 'meta'}
+        onToggle={() => toggle('meta')}
+        handleChange={handleChange} 
+      />
 
-        <MetaSection data={data} handleChange={handleChange} />
+      <ItemsSection 
+        data={data}
+        open={openCard === 'items'}
+        onToggle={() => toggle('items')}
+        servicesLoading={servicesLoading}
+        servicesError={servicesError}
+        services={services}
+        handleServiceSelect={handleServiceSelect}
+        handleItemChange={handleItemChange}
+        addItem={addItem}
+        removeItem={removeItem}
+        showToast={showToast}
+        onChange={onChange}
+      />
 
-        <ItemsSection 
-          data={data}
-          servicesLoading={servicesLoading}
-          servicesError={servicesError}
-          services={services}
-          handleServiceSelect={handleServiceSelect}
-          handleItemChange={handleItemChange}
-          addItem={addItem}
-          removeItem={removeItem}
-          showToast={showToast}
-          onChange={onChange}
-        />
-
-        <div className="ie-section">
-          <div style={{ padding: '14px 16px 6px' }}>
-            <Label>Footer / Payment Notes</Label>
-          </div>
-          <div style={{ padding: '0 16px 16px' }}>
+      <Section 
+        icon={<LuFileText size={16} />} 
+        title="Footer / Payment Notes" 
+        open={openCard === 'notes'} 
+        onToggle={() => toggle('notes')}
+      >
+        <div className="field-row">
+          <Field label="Terms & Conditions / Bank Details" fullWidth>
             <textarea
-              className="ie-input"
-              style={{ resize: 'vertical', minHeight: 80, lineHeight: 1.6, background: data.isExisting ? '#f8fafc' : 'white', color: data.isExisting ? '#64748b' : '#0f172a' }}
+              style={{ resize: 'vertical', minHeight: 80, lineHeight: 1.6, background: data.isExisting ? '#f8fafc' : 'white', color: data.isExisting ? '#64748b' : '#0f172a', border: '1px solid var(--line)', borderRadius: 6, padding: '8px 10px', fontSize: '13.5px', fontFamily: 'Inter, sans-serif' }}
               value={data.footerNotes}
               readOnly={data.isExisting}
               placeholder="e.g. Bank Account Details or Terms & Conditions"
               onChange={e => onChange(prev => ({ ...prev, footerNotes: e.target.value }))}
             />
-          </div>
+          </Field>
         </div>
-      </div>
-    </div>
+      </Section>
+    </>
   );
 };
 

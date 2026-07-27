@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InvoGen — Invoice Editor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#14161A;
+    --ink-soft:#2B2E33;
+    --surface:#F6F6F3;
+    --paper:#FFFFFF;
+    --line:#E4E4DF;
+    --text-primary:#1B1D20;
+    --text-secondary:#6B6E67;
+    --text-muted:#9A9C95;
+    --accent:#2F5D50;
+    --accent-hover:#264C42;
+    --accent-soft:#E3ECE8;
+    --accent-text:#204238;
+    --gold:#B8863A;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--surface);
+    color:var(--text-primary);
+    font-family:'Inter', sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .app{display:flex;min-height:100vh;}
+
+  /* ---------- Sidebar ---------- */
+  .sidebar{
+    width:232px;
+    flex:none;
+    background:var(--ink);
+    color:#E7E8E4;
+    padding:22px 16px;
+    display:flex;
+    flex-direction:column;
+  }
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:0 6px 20px;
+    border-bottom:1px solid rgba(231,232,228,.1);
+    margin-bottom:16px;
+  }
+  .brand-mark{
+    width:32px;height:32px;
+    border-radius:8px;
+    background:var(--accent);
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:16px;
+    color:#EAF2EF;
+    flex:none;
+  }
+  .brand-name{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:16.5px;
+    color:#F3F4F0;
+    line-height:1.1;
+  }
+  .brand-tier{
+    font-size:10px;
+    letter-spacing:1.2px;
+    color:#8C9490;
+    text-transform:uppercase;
+    margin-top:2px;
+  }
+  .nav-group-label{
+    font-size:10.5px;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    color:#767A73;
+    padding:14px 10px 8px;
+  }
+  .nav-item{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:9px 10px;
+    border-radius:7px;
+    font-size:13.5px;
+    color:#C9CBC5;
+    cursor:pointer;
+    margin-bottom:2px;
+  }
+  .nav-item i{font-size:16px;opacity:.85;}
+  .nav-item:hover{background:rgba(231,232,228,.06);color:#F0F1EC;}
+  .nav-item.active{
+    background:var(--accent);
+    color:#EAF2EF;
+  }
+  .nav-item.active i{opacity:1;}
+  .sidebar-spacer{flex:1;}
+  .sidebar-user{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:12px 10px;
+    border-top:1px solid rgba(231,232,228,.1);
+  }
+  .user-avatar{
+    width:30px;height:30px;border-radius:50%;
+    background:#3A3D41;
+    display:flex;align-items:center;justify-content:center;
+    font-size:11.5px;font-weight:600;color:#E7E8E4;
+    flex:none;
+  }
+  .user-name{font-size:13px;color:#EDEEEA;font-weight:500;}
+  .user-email{font-size:11px;color:#8C9490;}
+
+  /* ---------- Main ---------- */
+  .main{flex:1;min-width:0;padding:28px 36px 60px;}
+  .topbar{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    margin-bottom:24px;
+    gap:20px;
+  }
+  .topbar-eyebrow{
+    font-size:11px;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    color:var(--text-muted);
+    margin-bottom:4px;
+  }
+  .topbar h1{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:24px;
+    margin:0 0 4px;
+    color:var(--text-primary);
+  }
+  .topbar p{
+    font-size:13.5px;
+    color:var(--text-secondary);
+    margin:0;
+  }
+  .topbar-actions{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex:none;
+  }
+  .status-pill{
+    font-size:12px;
+    font-weight:500;
+    padding:6px 12px;
+    border-radius:20px;
+    background:var(--accent-soft);
+    color:var(--accent-text);
+    display:flex;
+    align-items:center;
+    gap:6px;
+    cursor:pointer;
+  }
+  .status-pill .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);}
+  .btn{
+    font-family:'Inter', sans-serif;
+    font-size:13.5px;
+    font-weight:500;
+    padding:9px 16px;
+    border-radius:7px;
+    cursor:pointer;
+    border:1px solid var(--line);
+    background:var(--paper);
+    color:var(--text-primary);
+    display:flex;align-items:center;gap:7px;
+  }
+  .btn:hover{border-color:#C7C8C2;}
+  .btn-primary{
+    background:var(--accent);
+    border-color:var(--accent);
+    color:#EAF2EF;
+  }
+  .btn-primary:hover{background:var(--accent-hover);}
+
+  /* ---------- Content grid ---------- */
+  .content-grid{
+    display:grid;
+    grid-template-columns:1.5fr 1fr;
+    gap:22px;
+    align-items:start;
+  }
+  @media (max-width:960px){ .content-grid{grid-template-columns:1fr;} }
+
+  .card{
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:10px;
+    margin-bottom:14px;
+    overflow:hidden;
+  }
+  .accordion-head{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:15px 18px;
+    cursor:pointer;
+    user-select:none;
+  }
+  .accordion-icon{
+    width:30px;height:30px;
+    border-radius:7px;
+    background:var(--accent-soft);
+    color:var(--accent-text);
+    display:flex;align-items:center;justify-content:center;
+    font-size:15px;
+    flex:none;
+  }
+  .accordion-title{
+    font-size:14px;
+    font-weight:500;
+    color:var(--text-primary);
+    flex:1;
+  }
+  .accordion-sub{
+    font-size:12px;
+    color:var(--text-muted);
+    display:block;
+    margin-top:1px;
+    font-weight:400;
+  }
+  .chevron{
+    color:var(--text-muted);
+    font-size:15px;
+    transition:transform .15s ease;
+  }
+  .card.open .chevron{transform:rotate(180deg);}
+  .accordion-body{
+    padding:0 18px 18px;
+    display:none;
+  }
+  .card.open .accordion-body{display:block;}
+
+  .field-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:12px;}
+  .field{display:flex;flex-direction:column;gap:5px;}
+  .field.full{grid-column:1/-1;}
+  .field label{
+    font-size:11.5px;
+    font-weight:500;
+    color:var(--text-secondary);
+  }
+  .field input,.field textarea,.field select{
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:8px 10px;
+    font-size:13.5px;
+    font-family:'Inter', sans-serif;
+    color:var(--text-primary);
+    background:var(--surface);
+  }
+  .field input:focus,.field textarea:focus,.field select:focus{
+    outline:none;
+    border-color:var(--accent);
+    box-shadow:0 0 0 3px var(--accent-soft);
+  }
+
+  /* Line items — always expanded card */
+  .items-card .accordion-body{display:block;padding-top:4px;}
+  table.items{width:100%;border-collapse:collapse;}
+  table.items thead th{
+    text-align:left;
+    font-size:10.5px;
+    letter-spacing:.6px;
+    text-transform:uppercase;
+    color:var(--text-muted);
+    font-weight:500;
+    padding:6px 8px;
+    border-bottom:1px solid var(--line);
+  }
+  table.items thead th.num{text-align:right;}
+  table.items tbody td{
+    padding:9px 8px;
+    border-bottom:1px solid var(--line);
+    vertical-align:middle;
+  }
+  table.items tbody tr:last-child td{border-bottom:none;}
+  .items input{
+    width:100%;
+    border:none;
+    background:transparent;
+    padding:5px 2px;
+    font-size:13.5px;
+    color:var(--text-primary);
+    font-family:'Inter', sans-serif;
+  }
+  .items input:focus{outline:none;border-bottom:1px solid var(--accent);}
+  .items input.num{font-family:'IBM Plex Mono', monospace;text-align:right;}
+  .amt-cell{
+    font-family:'IBM Plex Mono', monospace;
+    text-align:right;
+    font-size:13.5px;
+    color:var(--text-primary);
+    white-space:nowrap;
+  }
+  .row-more{
+    font-size:11.5px;
+    color:var(--accent-text);
+    cursor:pointer;
+    margin-top:2px;
+    display:inline-block;
+  }
+  .row-del{
+    background:none;border:none;cursor:pointer;
+    color:var(--text-muted);
+    font-size:15px;
+    padding:4px;border-radius:5px;
+  }
+  .row-del:hover{color:#B5433A;background:#FBEBEA;}
+  .add-row-btn{
+    margin-top:10px;
+    background:none;
+    border:1px dashed var(--line);
+    color:var(--text-secondary);
+    font-size:12.5px;
+    font-weight:500;
+    padding:8px 14px;
+    border-radius:6px;
+    cursor:pointer;
+  }
+  .add-row-btn:hover{border-color:var(--accent);color:var(--accent-text);background:var(--accent-soft);}
+
+  .summary-row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+    margin-top:16px;
+    padding-top:14px;
+    border-top:1px solid var(--line);
+  }
+  .summary-totals{margin-top:14px;}
+  .sum-line{
+    display:flex;justify-content:space-between;
+    font-size:13px;padding:5px 0;
+    color:var(--text-secondary);
+  }
+  .sum-line .v{font-family:'IBM Plex Mono', monospace;color:var(--text-primary);}
+  .sum-line.total{
+    border-top:1px solid var(--line);
+    margin-top:6px;padding-top:10px;
+    font-weight:500;color:var(--text-primary);
+  }
+  .balance-due{
+    display:flex;justify-content:space-between;align-items:center;
+    background:var(--accent-soft);
+    border-radius:8px;
+    padding:12px 14px;
+    margin-top:10px;
+  }
+  .balance-due .label{font-size:12.5px;color:var(--accent-text);font-weight:500;}
+  .balance-due .amt{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:19px;font-weight:600;color:var(--accent-text);
+  }
+
+  /* ---------- Preview placeholder ---------- */
+  .preview-shell{position:sticky;top:24px;}
+  .preview-label{
+    display:flex;justify-content:space-between;align-items:center;
+    margin-bottom:10px;
+  }
+  .preview-label span:first-child{
+    font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);font-weight:500;
+  }
+  .preview-pill{
+    font-size:11px;color:var(--text-muted);
+    border:1px solid var(--line);
+    padding:3px 9px;border-radius:12px;
+  }
+  .preview-card{
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:10px;
+    min-height:560px;
+    position:relative;
+    overflow:hidden;
+    padding:26px 26px 0;
+  }
+  .preview-fold{
+    position:absolute;top:0;right:0;
+    width:0;height:0;
+    border-style:solid;
+    border-width:0 28px 28px 0;
+    border-color:transparent var(--surface) transparent transparent;
+  }
+  .preview-skel{opacity:.55;}
+  .skel-line{
+    height:8px;border-radius:4px;
+    background:var(--line);
+    margin-bottom:10px;
+  }
+  .skel-block{
+    height:80px;border-radius:6px;
+    background:var(--surface);
+    border:1px solid var(--line);
+    margin:18px 0;
+  }
+  .preview-overlay{
+    position:absolute;inset:0;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;
+    background:linear-gradient(180deg, rgba(255,255,255,.4), rgba(255,255,255,.94) 40%);
+    padding:0 30px;
+  }
+  .preview-icon{
+    width:44px;height:44px;border-radius:50%;
+    border:1.5px solid var(--line);
+    display:flex;align-items:center;justify-content:center;
+    color:var(--text-muted);
+    margin-bottom:14px;
+    background:var(--paper);
+  }
+  .preview-title{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:16.5px;
+    color:var(--text-primary);
+    margin:0 0 6px;
+  }
+  .preview-copy{
+    font-size:12.5px;
+    color:var(--text-secondary);
+    max-width:220px;
+    line-height:1.55;
+    margin:0;
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">I</div>
+      <div>
+        <div class="brand-name">InvoGen</div>
+        <div class="brand-tier">Workspace Pro</div>
+      </div>
+    </div>
+    <div class="nav-group-label">General</div>
+    <div class="nav-item active"><i class="ti">▤</i> Invoice editor</div>
+    <div class="nav-item"><i class="ti">▦</i> Invoices</div>
+    <div class="nav-item"><i class="ti">◎</i> Customers</div>
+    <div class="nav-item"><i class="ti">◈</i> Products</div>
+    <div class="sidebar-spacer"></div>
+    <div class="nav-item"><i class="ti">⚙</i> Settings</div>
+    <div class="sidebar-user">
+      <div class="user-avatar">HB</div>
+      <div>
+        <div class="user-name">Harsh Bajaj</div>
+        <div class="user-email">harshbajaj544@gmail.com</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="topbar">
+      <div>
+        <div class="topbar-eyebrow">Invoice editor</div>
+        <h1>New invoice</h1>
+        <p>Fill in your business, client and line items — the preview updates as you go.</p>
+      </div>
+      <div class="topbar-actions">
+        <div class="status-pill"><span class="dot"></span> Draft</div>
+        <button class="btn btn-primary">Export PDF</button>
+      </div>
+    </div>
+
+    <div class="content-grid">
+      <div class="col-left">
+
+        <div class="card" data-open="false">
+          <div class="accordion-head" onclick="toggleCard(this)">
+            <div class="accordion-icon">🏢</div>
+            <div class="accordion-title">Business information<span class="accordion-sub">Name, address, tax IDs</span></div>
+            <span class="chevron">⌄</span>
+          </div>
+          <div class="accordion-body">
+            <div class="field-row">
+              <div class="field full"><label>Business name</label><input value="Zephy"></div>
+              <div class="field"><label>City</label><input value="New Delhi"></div>
+              <div class="field"><label>State</label><input value="Delhi"></div>
+              <div class="field"><label>MSME / UDYAM no.</label><input value="UDYAM-DL-02-0110882"></div>
+              <div class="field"><label>Phone</label><input value="8800862684"></div>
+              <div class="field full"><label>Email</label><input value="zephy939@gmail.com"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" data-open="false">
+          <div class="accordion-head" onclick="toggleCard(this)">
+            <div class="accordion-icon">👤</div>
+            <div class="accordion-title">Client information<span class="accordion-sub">Who this invoice is billed to</span></div>
+            <span class="chevron">⌄</span>
+          </div>
+          <div class="accordion-body">
+            <div class="field-row">
+              <div class="field full"><label>Client name</label><input placeholder="Client or company name"></div>
+              <div class="field full"><label>Billing address</label><textarea placeholder="Street, city, postcode"></textarea></div>
+              <div class="field"><label>Email</label><input placeholder="billing@client.com"></div>
+              <div class="field"><label>GSTIN</label><input placeholder="Optional"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" data-open="false">
+          <div class="accordion-head" onclick="toggleCard(this)">
+            <div class="accordion-icon">📅</div>
+            <div class="accordion-title">Invoice details<span class="accordion-sub">Number, dates, payment terms</span></div>
+            <span class="chevron">⌄</span>
+          </div>
+          <div class="accordion-body">
+            <div class="field-row">
+              <div class="field"><label>Invoice no.</label><input value="INV-018"></div>
+              <div class="field"><label>Terms</label><input value="On receipt"></div>
+              <div class="field"><label>Invoice date</label><input type="date"></div>
+              <div class="field"><label>Due date</label><input type="date"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card open items-card">
+          <div class="accordion-head" onclick="toggleCard(this)">
+            <div class="accordion-icon">≡</div>
+            <div class="accordion-title">Line items<span class="accordion-sub">What you're billing for</span></div>
+            <span class="chevron">⌄</span>
+          </div>
+          <div class="accordion-body">
+            <table class="items">
+              <thead>
+                <tr>
+                  <th style="width:44%">Description</th>
+                  <th class="num" style="width:12%">Qty</th>
+                  <th class="num" style="width:20%">Rate</th>
+                  <th class="num" style="width:20%">Amount</th>
+                  <th style="width:24px"></th>
+                </tr>
+              </thead>
+              <tbody id="itemsBody">
+                <tr>
+                  <td>
+                    <input class="desc" value="Sample service">
+                    <span class="row-more">+ Add HSN / notes</span>
+                  </td>
+                  <td><input class="num qty" type="number" value="1"></td>
+                  <td><input class="num rate" type="number" value="1000"></td>
+                  <td class="amt-cell"><span class="amt">₹1,000.00</span></td>
+                  <td><button class="row-del" onclick="this.closest('tr').remove()">×</button></td>
+                </tr>
+              </tbody>
+            </table>
+            <button class="add-row-btn" id="addRow">+ Add line item</button>
+
+            <div class="summary-row">
+              <div class="field"><label>GST (%)</label><input id="gstPct" type="number" value="18"></div>
+              <div class="field"><label>Discount (₹)</label><input id="discount" type="number" value="0"></div>
+            </div>
+            <div class="summary-totals">
+              <div class="sum-line"><span>Subtotal</span><span class="v" id="subtotalV">₹1,000.00</span></div>
+              <div class="sum-line"><span>Tax</span><span class="v" id="taxV">₹180.00</span></div>
+              <div class="sum-line total"><span>Total</span><span class="v" id="totalV">₹1,180.00</span></div>
+              <div class="balance-due">
+                <span class="label">Balance due</span>
+                <span class="amt" id="balanceV">₹1,180.00</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="col-right">
+        <div class="preview-shell">
+          <div class="preview-label">
+            <span>Preview</span>
+            <span class="preview-pill">Placeholder</span>
+          </div>
+          <div class="preview-card">
+            <div class="preview-fold"></div>
+            <div class="preview-skel">
+              <div class="skel-line" style="width:40%;height:16px;"></div>
+              <div class="skel-line" style="width:60%;"></div>
+              <div class="skel-line" style="width:35%;"></div>
+              <div class="skel-block"></div>
+              <div class="skel-line" style="width:90%;"></div>
+              <div class="skel-line" style="width:75%;"></div>
+              <div class="skel-line" style="width:50%;"></div>
+            </div>
+            <div class="preview-overlay">
+              <div class="preview-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="2" width="16" height="20" rx="1"/><line x1="8" y1="7" x2="16" y2="7"/><line x1="8" y1="11" x2="16" y2="11"/><line x1="8" y1="15" x2="13" y2="15"/></svg>
+              </div>
+              <p class="preview-title">Live preview coming here</p>
+              <p class="preview-copy">The finished invoice will render on this side as you fill in the form.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function toggleCard(head){
+    const card = head.closest('.card');
+    const isOpen = card.classList.contains('open');
+    document.querySelectorAll('.card').forEach(c=>{ if(c!==card) c.classList.remove('open'); });
+    card.classList.toggle('open', !isOpen);
+  }
+
+  const itemsBody = document.getElementById('itemsBody');
+  const fmt = n => '₹' + n.toLocaleString('en-IN', {minimumFractionDigits:2, maximumFractionDigits:2});
+
+  function wireRow(tr){
+    const qty = tr.querySelector('.qty');
+    const rate = tr.querySelector('.rate');
+    const amt = tr.querySelector('.amt');
+    function recalc(){
+      const q = parseFloat(qty.value) || 0;
+      const r = parseFloat(rate.value) || 0;
+      amt.textContent = fmt(q*r);
+      updateTotals();
+    }
+    qty.addEventListener('input', recalc);
+    rate.addEventListener('input', recalc);
+  }
+
+  function addRow(){
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><input class="desc" placeholder="Describe the work"><span class="row-more">+ Add HSN / notes</span></td>
+      <td><input class="num qty" type="number" value="1"></td>
+      <td><input class="num rate" type="number" value="0"></td>
+      <td class="amt-cell"><span class="amt">₹0.00</span></td>
+      <td><button class="row-del" onclick="this.closest('tr').remove(); updateTotals();">×</button></td>
+    `;
+    itemsBody.appendChild(tr);
+    wireRow(tr);
+    updateTotals();
+  }
+
+  function updateTotals(){
+    let subtotal = 0;
+    itemsBody.querySelectorAll('tr').forEach(tr=>{
+      const q = parseFloat(tr.querySelector('.qty').value) || 0;
+      const r = parseFloat(tr.querySelector('.rate').value) || 0;
+      subtotal += q*r;
+    });
+    const gstPct = parseFloat(document.getElementById('gstPct').value) || 0;
+    const discount = parseFloat(document.getElementById('discount').value) || 0;
+    const tax = subtotal * (gstPct/100);
+    const total = Math.max(subtotal + tax - discount, 0);
+    document.getElementById('subtotalV').textContent = fmt(subtotal);
+    document.getElementById('taxV').textContent = fmt(tax);
+    document.getElementById('totalV').textContent = fmt(total);
+    document.getElementById('balanceV').textContent = fmt(total);
+  }
+
+  document.getElementById('addRow').addEventListener('click', addRow);
+  document.getElementById('gstPct').addEventListener('input', updateTotals);
+  document.getElementById('discount').addEventListener('input', updateTotals);
+  itemsBody.querySelectorAll('tr').forEach(wireRow);
+
+  document.querySelectorAll('.sidebar .nav-item').forEach(item=>{
+    item.addEventListener('click', ()=>{
+      document.querySelectorAll('.sidebar .nav-item').forEach(i=>i.classList.remove('active'));
+      item.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>
