@@ -1,0 +1,495 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap');
+
+.login-wrapper {
+  --ink: #132821;
+  --ink-2: #1c352c;
+  --paper: #F4F1E9;
+  --paper-2: #FFFFFF;
+  --gold: #C8933F;
+  --gold-soft: #E7C387;
+  --sage: #7FA694;
+  --text-dark: #16241F;
+  --text-muted: #6B7A73;
+  --line: rgba(20, 40, 32, 0.08);
+  --radius: 14px;
+
+  font-family: 'Inter', sans-serif;
+  background: var(--paper);
+  color: var(--text-dark);
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.login-wrapper * {
+  box-sizing: border-box;
+}
+
+.login-split {
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* LEFT PANEL */
+.login-brand-panel {
+  flex: 1.05;
+  position: relative;
+  background: linear-gradient(160deg, var(--ink) 0%, var(--ink-2) 55%, #0f2019 100%);
+  color: #fff;
+  padding: 56px 64px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+}
+
+.login-ledger-lines {
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(to bottom,
+      transparent 0px, transparent 47px,
+      rgba(255, 255, 255, 0.05) 48px);
+  mask-image: linear-gradient(to bottom, transparent, black 15%, black 80%, transparent);
+  pointer-events: none;
+}
+
+.login-brand-panel::after {
+  content: "";
+  position: absolute;
+  right: -120px;
+  top: -120px;
+  width: 420px;
+  height: 420px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(200, 147, 63, 0.16), transparent 65%);
+}
+
+.login-brandmark {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  position: relative;
+  z-index: 2;
+}
+
+.login-brandmark .mark {
+  width: 38px;
+  height: 38px;
+  border-radius: 9px;
+  background: var(--gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Fraunces', serif;
+  font-weight: 600;
+  font-size: 19px;
+  color: var(--ink);
+}
+
+.login-brandmark .word {
+  font-family: 'Fraunces', serif;
+  font-weight: 600;
+  font-size: 21px;
+  letter-spacing: 0.2px;
+}
+
+.login-hero {
+  position: relative;
+  z-index: 2;
+  max-width: 460px;
+}
+
+.login-hero .eyebrow {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  color: var(--gold-soft);
+  text-transform: uppercase;
+  margin-bottom: 18px;
+  display: block;
+}
+
+.login-hero h1 {
+  font-family: 'Fraunces', serif;
+  font-weight: 500;
+  font-size: 44px;
+  line-height: 1.12;
+  margin: 0 0 18px;
+  letter-spacing: -0.5px;
+}
+
+.login-hero h1 em {
+  font-style: normal;
+  color: var(--gold-soft);
+}
+
+.login-hero p {
+  font-size: 16px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.72);
+  margin: 0;
+  max-width: 380px;
+}
+
+/* Invoice card signature element */
+.login-invoice-stage {
+  position: relative;
+  z-index: 2;
+  height: 150px;
+  margin: 36px 0 8px;
+}
+
+.login-invoice-card {
+  position: absolute;
+  width: 280px;
+  background: var(--paper-2);
+  border-radius: 12px;
+  padding: 18px 20px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+  color: var(--text-dark);
+  animation: cardIn 900ms cubic-bezier(.2, .9, .25, 1) both;
+}
+
+.login-invoice-card .row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.login-invoice-card .no {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.login-invoice-card .amt {
+  font-family: 'Fraunces', serif;
+  font-weight: 600;
+  font-size: 22px;
+  margin-top: 6px;
+}
+
+.login-invoice-card .client {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.login-invoice-card .bar {
+  height: 6px;
+  border-radius: 4px;
+  background: var(--line);
+  margin-top: 14px;
+  overflow: hidden;
+}
+
+.login-invoice-card .bar span {
+  display: block;
+  height: 100%;
+  width: 0%;
+  background: var(--sage);
+  animation: fillBar 1400ms 900ms ease forwards;
+}
+
+.login-stamp {
+  position: absolute;
+  top: 6px;
+  right: -6px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 700;
+  font-size: 12px;
+  color: #3E7A5E;
+  border: 2px solid #3E7A5E;
+  border-radius: 6px;
+  padding: 3px 8px;
+  letter-spacing: 0.08em;
+  transform: rotate(-10deg) scale(0);
+  animation: stampIn 400ms 1500ms cubic-bezier(.36, 1.6, .4, 1) forwards;
+}
+
+@keyframes cardIn {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes fillBar {
+  to {
+    width: 100%;
+  }
+}
+
+@keyframes stampIn {
+  to {
+    transform: rotate(-10deg) scale(1);
+  }
+}
+
+.login-trust-line {
+  position: relative;
+  z-index: 2;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.55);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.login-trust-line .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--gold-soft);
+}
+
+/* RIGHT PANEL */
+.login-form-panel {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  background: var(--paper);
+}
+
+.login-card {
+  width: 100%;
+  max-width: 500px;
+  background: var(--paper-2);
+  border-radius: 20px;
+  padding: 44px 40px 36px;
+  box-shadow: 0 1px 2px rgba(20, 40, 32, 0.04), 0 20px 50px rgba(20, 40, 32, 0.06);
+  border: 1px solid var(--line);
+}
+
+.login-card h2 {
+  font-family: 'Fraunces', serif;
+  font-weight: 600;
+  font-size: 28px;
+  margin: 0 0 6px;
+}
+
+.login-card .sub {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin: 0 0 28px;
+}
+
+.login-wrapper label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.login-field {
+  margin-bottom: 18px;
+}
+
+.login-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  border: 1.5px solid var(--line);
+  border-radius: 10px;
+  background: #fff;
+  transition: border-color 160ms, box-shadow 160ms;
+}
+
+.login-input-wrap:focus-within {
+  border-color: var(--sage);
+  box-shadow: 0 0 0 4px rgba(127, 166, 148, 0.16);
+}
+
+.login-input-wrap svg {
+  margin-left: 14px;
+  flex-shrink: 0;
+  color: var(--text-muted);
+}
+
+.login-input-wrap input {
+  border: none;
+  outline: none;
+  background: transparent;
+  padding: 13px 12px;
+  font-size: 14px;
+  width: 100%;
+  color: var(--text-dark);
+  font-family: 'Inter', sans-serif;
+}
+
+.login-input-wrap input::placeholder {
+  color: #A6ADA9;
+}
+
+.login-toggle-eye {
+  margin-right: 12px;
+  cursor: pointer;
+  color: var(--text-muted);
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  padding: 0;
+  display: flex;
+}
+
+.login-row-between {
+  display: flex;
+  justify-content: flex-end;
+  margin: -8px 0 20px;
+}
+
+.login-row-between a {
+  font-size: 12.5px;
+  color: var(--sage);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.login-row-between a:hover {
+  text-decoration: underline;
+}
+
+.login-btn-primary {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 10px;
+  background: var(--ink);
+  color: #fff;
+  font-size: 14.5px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: background 160ms, transform 160ms;
+  font-family: 'Inter', sans-serif;
+}
+
+.login-btn-primary:hover {
+  background: var(--ink-2);
+}
+
+.login-btn-primary:active {
+  transform: scale(0.99);
+}
+
+.login-btn-primary:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+.login-security-note {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  justify-content: center;
+  font-size: 11.5px;
+  color: var(--text-muted);
+  margin-top: 14px;
+}
+
+.login-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 26px 0 18px;
+}
+
+.login-divider::before,
+.login-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+
+.login-divider span {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.login-btn-google {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1.5px solid var(--line);
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text-dark);
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  transition: border-color 160ms, background 160ms;
+}
+
+.login-btn-google:hover {
+  border-color: #c9d0cb;
+  background: #fafaf8;
+}
+
+.login-signup-line {
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-top: 24px;
+}
+
+.login-signup-line a {
+  color: var(--ink);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.login-signup-line a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width:860px) {
+  .login-split {
+    flex-direction: column;
+  }
+
+  .login-brand-panel {
+    padding: 36px 28px 44px;
+  }
+
+  .login-hero h1 {
+    font-size: 32px;
+  }
+
+  .login-invoice-stage {
+    height: 120px;
+  }
+
+  .login-form-panel {
+    padding: 28px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .login-invoice-card,
+  .login-stamp,
+  .login-invoice-card .bar span {
+    animation: none !important;
+  }
+}
