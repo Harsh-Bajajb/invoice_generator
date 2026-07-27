@@ -87,6 +87,45 @@
   color: var(--ink);
 }
 
+.login-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: 'Fraunces', serif;
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--paper);
+}
+
+.mobile-logo {
+  display: none;
+  align-items: center;
+  gap: 12px;
+  font-family: 'Fraunces', serif;
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 32px;
+  justify-content: center;
+}
+
+@media (max-width: 480px) {
+  .mobile-logo {
+    display: flex;
+  }
+}
+
+.mobile-logo .logo-box {
+  background: var(--ink);
+  color: var(--gold-soft);
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+}
+
 .login-brandmark .word {
   font-family: 'Fraunces', serif;
   font-weight: 600;
@@ -467,21 +506,50 @@
   .login-split {
     flex-direction: column;
   }
-
   .login-brand-panel {
     padding: 36px 28px 44px;
+    flex: none;
   }
-
   .login-hero h1 {
     font-size: 32px;
   }
-
   .login-invoice-stage {
     height: 120px;
   }
-
   .login-form-panel {
     padding: 28px;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-split {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: var(--paper);
+    background-image:
+      radial-gradient(circle at 15% 10%, rgba(127, 166, 148, 0.15) 0%, transparent 50%),
+      radial-gradient(circle at 85% 90%, rgba(200, 147, 63, 0.1) 0%, transparent 50%),
+      radial-gradient(var(--line) 1.5px, transparent 1.5px);
+    background-size: 100% 100%, 100% 100%, 24px 24px;
+    background-position: center, center, center;
+  }
+
+  .login-brand-panel {
+    display: none;
+  }
+
+  .mobile-logo {
+    display: flex;
+  }
+
+  .login-form-panel {
+    padding: 32px 20px;
+    width: 100%;
+    max-width: 480px;
+    display: flex;
+    flex-direction: column;
+    margin: auto;
   }
 }
 

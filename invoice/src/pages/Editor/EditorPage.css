@@ -1,18 +1,15 @@
 /* Base resets specifically for the editor layout to prevent tailwind conflicts */
 .editor-layout-wrapper {
-  background: var(--surface);
   color: var(--text-primary);
   font-family: 'Inter', sans-serif;
   -webkit-font-smoothing: antialiased;
-  min-height: 100vh;
-  margin: -32px; /* Negate the padding from content-inner if necessary, or just rely on layout */
 }
 
 /* ---------- Main ---------- */
 .editor-main {
   flex: 1;
   min-width: 0;
-  padding: 28px 36px 60px;
+  padding: 0 0 60px 0;
 }
 .editor-topbar {
   display: flex;
@@ -101,6 +98,34 @@
   .content-grid {
     grid-template-columns: 1fr;
   }
+  .editor-main {
+    padding: 0 0 24px 0;
+  }
+}
+@media (max-width: 640px) {
+  .editor-main {
+    padding: 0 0 16px 0;
+  }
+  .editor-topbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  .editor-topbar h1 {
+    font-size: 22px;
+  }
+  .editor-topbar p {
+    font-size: 13px;
+    margin-top: 4px;
+  }
+  .topbar-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+  .field-row {
+    grid-template-columns: 1fr !important;
+  }
 }
 
 .editor-card {
@@ -181,6 +206,8 @@
 .editor-field input,
 .editor-field textarea,
 .editor-field select {
+  width: 100%;
+  box-sizing: border-box;
   border: 1px solid var(--line);
   border-radius: 6px;
   padding: 8px 10px;

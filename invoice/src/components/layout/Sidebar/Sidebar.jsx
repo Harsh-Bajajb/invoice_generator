@@ -132,9 +132,14 @@ const Sidebar = ({ isOpen, onToggle }) => {
           <button className="sb-menu-btn" onClick={() => setMobileOpen(true)}>
             <Menu size={20} color="#1B1D20" />
           </button>
-          <span className="brand-name" style={{ fontSize: '16px', color: '#1B1D20' }}>
-            InvoGen
-          </span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <div style={{ background: '#132821', padding: 4, borderRadius: 6, display: 'flex' }}>
+              <img src="/zephy.png" alt="Zephy" style={{ width: 16, height: 16, filter: 'brightness(0) invert(1)' }} />
+            </div>
+            <span className="brand-name" style={{ fontSize: '16px', color: '#1B1D20', fontWeight: 600 }}>
+              Zephy
+            </span>
+          </div>
         </div>
       </div>
 

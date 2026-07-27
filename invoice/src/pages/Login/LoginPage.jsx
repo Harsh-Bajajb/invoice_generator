@@ -83,7 +83,12 @@ function LoginPage() {
 
         </div>
 
+        {/* Right Side: Auth Form */}
         <div className="login-form-panel">
+          <div className="mobile-logo">
+            <div className="logo-box">Z</div>
+            <span>Zephy</span>
+          </div>
           <div className="login-card">
             <h2>Welcome back</h2>
             <p className="sub">Sign in to your workspace</p>
@@ -100,11 +105,11 @@ function LoginPage() {
               <div className="login-field">
                 <label htmlFor="email">Email address</label>
                 <div className="login-input-wrap">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 4h16v16H4z" opacity="0"/><path d="M3 6.5A2.5 2.5 0 0 1 5.5 4h13A2.5 2.5 0 0 1 21 6.5v11A2.5 2.5 0 0 1 18.5 20h-13A2.5 2.5 0 0 1 3 17.5v-11Z"/><path d="m3.5 6 8.5 6.5L20.5 6"/></svg>
-                  <input 
-                    id="email" 
-                    type="email" 
-                    placeholder="name@example.com" 
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 4h16v16H4z" opacity="0" /><path d="M3 6.5A2.5 2.5 0 0 1 5.5 4h13A2.5 2.5 0 0 1 21 6.5v11A2.5 2.5 0 0 1 18.5 20h-13A2.5 2.5 0 0 1 3 17.5v-11Z" /><path d="m3.5 6 8.5 6.5L20.5 6" /></svg>
+                  <input
+                    id="email"
+                    type="email"
+                    placeholder="name@example.com"
                     autoComplete="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -116,25 +121,25 @@ function LoginPage() {
               <div className="login-field">
                 <label htmlFor="password">Password</label>
                 <div className="login-input-wrap">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
-                  <input 
-                    id="password" 
-                    type={showPassword ? 'text' : 'password'} 
-                    placeholder="••••••••" 
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V7a4 4 0 0 1 8 0v4" /></svg>
+                  <input
+                    id="password"
+                    type={showPassword ? 'text' : 'password'}
+                    placeholder="••••••••"
                     autoComplete="current-password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     disabled={isLoading}
                   />
-                  <button 
-                    className="login-toggle-eye" 
-                    type="button" 
-                    aria-label="Show password" 
+                  <button
+                    className="login-toggle-eye"
+                    type="button"
+                    aria-label="Show password"
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z"/>
-                      <circle cx="12" cy="12" r="3"/>
+                      <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z" />
+                      <circle cx="12" cy="12" r="3" />
                     </svg>
                   </button>
                 </div>
@@ -146,24 +151,23 @@ function LoginPage() {
 
               <button className="login-btn-primary" type="submit" disabled={isLoading}>
                 {isLoading ? 'Signing in...' : 'Sign in'}
-                {!isLoading && <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>}
+                {!isLoading && <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path d="M5 12h14M13 5l7 7-7 7" /></svg>}
               </button>
 
               <div className="login-security-note">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V7a4 4 0 0 1 8 0v4" /></svg>
                 Your data is encrypted end-to-end
               </div>
 
               <div className="login-divider"><span>Or continue with</span></div>
 
-              <div style={{ display: 'flex', justifyContent: 'center' }}>
+              <div className="login-google-wrap">
                 <GoogleLogin
                   onSuccess={handleGoogleSuccess}
                   onError={handleGoogleError}
                   useOneTap
                   theme="outline"
                   size="large"
-                  width="100%"
                 />
               </div>
 
